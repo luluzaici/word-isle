@@ -1,0 +1,60 @@
+name: Build unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main", "master"]
+    paths:
+      - "ios/**"
+      - ".github/workflows/build-ipa.yml"
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build app without signing
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project WordIsle.xcodeproj \
+            -scheme WordIsle \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package unsigned IPA
+        working-directory: ios
+        run: |
+          set -euo pipefail
+          APP_PATH="$(find build/Build/Products/Release-iphoneos -maxdepth 1 -type d -name 'WordIsle.app' | head -n 1)"
+          if [ -z "$APP_PATH" ]; then
+            echo "WordIsle.app not found"
+            find build/Build/Products -maxdepth 3 -type d || true
+            exit 1
+          fi
+          rm -rf Payload WordIsle-unsigned.ipa
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          zip -qry WordIsle-unsigned.ipa Payload
+          ls -lh WordIsle-unsigned.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WordIsle-unsigned-ipa
+          path: ios/WordIsle-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
