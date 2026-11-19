@@ -1,0 +1,24 @@
+{
+  "id": "wordisle",
+  "name": "词屿 · 5500 词汇",
+  "short_name": "词屿",
+  "description": "把释义藏起来，点一下再出现。记录每一次答对与答错，看见自己的正确率。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#F6F3EA",
+  "theme_color": "#F6F3EA",
+  "categories": ["education", "books", "productivity"],
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any"}
+  ],
+  "shortcuts": [
+    {"name": "开始学习", "short_name": "学习", "url": "./?start=study", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "我的词库", "short_name": "词库", "url": "./?start=library", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
+  ]
+}
